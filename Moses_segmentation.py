@@ -1264,6 +1264,7 @@ f_out=codecs.open(output_data,"w","utf-8")
 with codecs.open(train_english,"r","utf-8") as eng:
     for eng_line in eng.readlines():
         eng_out=tokenizer.tokenize(eng_line, return_str=True,escape=False)+"\n" #escape=False 不将标点替换为html编码
+        #eng_out = re.sub("[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+", " ",eng_out) #去掉标点符号
         f_out.write(eng_out)
 f_out.close()
 
