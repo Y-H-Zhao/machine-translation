@@ -11,7 +11,7 @@ import sys
 #1.参数设置
 
 # 读取checkpoint的路径。9000表示是训练程序在第9000步保存的checkpoint。
-checkpoint_path = "./seq2seq_ckpt-9000"
+checkpoint_path = "./save/seq2seq_ckpt-9000"
 
 # 模型参数。必须与训练时的模型参数保持一致。
 hidden_size = 1024                         	# LSTM的隐藏层规模。
