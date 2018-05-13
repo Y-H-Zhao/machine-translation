@@ -4,6 +4,7 @@ Created on Fri May 11 22:32:00 2018
 
 @author: ZYH
 """
+
 import tensorflow as tf
 import codecs
 import sys
@@ -28,6 +29,7 @@ Trg_vocab = "./zh.vocab"
 # 是否是<eos>，因此需要知道这两个符号的ID。
 sos_id = 1
 eos_id = 2
+
 
 #2.定义NMT模型和解码步骤
 # 定义NMTModel类来描述模型。
@@ -65,14 +67,14 @@ class NMTModel(object):
         src_emb = tf.nn.embedding_lookup(self.src_embedding, src_input)
 
         # 使用dynamic_rnn构造编码器。这一步与训练时相同。
-        with tf.variable_scope("encoder", reuse=tf.AUTO_REUSE):
+        with tf.variable_scope("encoder",reuse = tf.AUTO_REUSE):
             enc_outputs, enc_state = tf.nn.dynamic_rnn(
                 self.enc_cell, src_emb, src_size, dtype=tf.float32)
    
         # 设置解码的最大步数。这是为了避免在极端情况出现无限循环的问题。
         MAX_DEC_LEN=100
 
-        with tf.variable_scope("decoder/rnn/multi_rnn_cell", reuse=tf.AUTO_REUSE):
+        with tf.variable_scope("decoder/rnn/multi_rnn_cell",reuse = tf.AUTO_REUSE):
             # 使用一个变长的TensorArray来存储生成的句子。
             init_array = tf.TensorArray(dtype=tf.int32, size=0,
                 dynamic_size=True, clear_after_read=False)
@@ -115,11 +117,33 @@ class NMTModel(object):
 #3.翻译一个测试句子
 def main():
     # 定义训练用的循环神经网络模型。
+    # 
     with tf.variable_scope("nmt_model", reuse=tf.AUTO_REUSE):
         model = NMTModel()
 
     # 定义个测试句子。
-    test_en_text = "This is a test . <eos>"
+    test_en_text = input("请输入待翻译英文：")+"<eos>"
+    #"This is a test ." "What are you doing ?" "I love you ." "I love their kids ."
+    #"Who are you ?"
+    '''
+    原文的一些句子
+    They 're actually looking at them down in that world .
+    We 're going to take a joystick , sit in front of our computer , on the Earth , and press the joystick forward , and fly around the planet .
+    We 're going to look at the mid-ocean ridge , a 40,000-mile long mountain range .
+    The average depth at the top of it is about a mile and a half .
+    And we 're over the Atlantic -- that 's the ridge right there -- but we 're going to go across the Caribbean , Central America , and end up against the Pacific , nine degrees north .
+    We make maps of these mountain ranges with sound , with sonar , and this is one of those mountain ranges .
+    We 're coming around a cliff here on the right .
+    The height of these mountains on either side of this valley is greater than the Alps in most cases .
+    And there 's tens of thousands of those mountains out there that haven 't been mapped yet .
+    This is a volcanic ridge .
+    We 're getting down further and further in scale .
+    And eventually , we can come up with something like this .
+    This is an icon of our robot , Jason , it 's called .
+    And you can sit in a room like this , with a joystick and a headset , and drive a robot like that around the bottom of the ocean in real time .
+    One of the things we 're trying to do at Woods Hole with our partners is to bring this virtual world -- this world , this unexplored region -- back to the laboratory .
+    Because we see it in bits and pieces right now .
+    '''
     print(test_en_text)
     
     # 根据英文词汇表，将测试句子转为单词ID。
