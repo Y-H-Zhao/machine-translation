@@ -65,14 +65,14 @@ class NMTModel(object):
         src_emb = tf.nn.embedding_lookup(self.src_embedding, src_input)
 
         # 使用dynamic_rnn构造编码器。这一步与训练时相同。
-        with tf.variable_scope("encoder"):
+        with tf.variable_scope("encoder", reuse=tf.AUTO_REUSE):
             enc_outputs, enc_state = tf.nn.dynamic_rnn(
                 self.enc_cell, src_emb, src_size, dtype=tf.float32)
    
         # 设置解码的最大步数。这是为了避免在极端情况出现无限循环的问题。
         MAX_DEC_LEN=100
 
-        with tf.variable_scope("decoder/rnn/multi_rnn_cell"):
+        with tf.variable_scope("decoder/rnn/multi_rnn_cell", reuse=tf.AUTO_REUSE):
             # 使用一个变长的TensorArray来存储生成的句子。
             init_array = tf.TensorArray(dtype=tf.int32, size=0,
                 dynamic_size=True, clear_after_read=False)
@@ -115,7 +115,7 @@ class NMTModel(object):
 #3.翻译一个测试句子
 def main():
     # 定义训练用的循环神经网络模型。
-    with tf.variable_scope("nmt_model", reuse=None):
+    with tf.variable_scope("nmt_model", reuse=tf.AUTO_REUSE):
         model = NMTModel()
 
     # 定义个测试句子。
